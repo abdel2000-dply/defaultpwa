@@ -96,6 +96,8 @@ export default defineNuxtConfig({
     },
   },
   modules: [
+    '~/modules/theme-overrides',
+    '~/modules/proxy-server',
     '@plentymarkets/shop-core',
     '@plentymarkets/shop-module-mollie',
     '@plentymarkets/shop-module-gtag',

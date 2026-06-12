@@ -24,6 +24,17 @@
     "outOfStock": "Der Artikel ist aktuell nicht auf Lager",
     "readAndAccepted": "Ich habe die {privacyPolicy} gelesen und akzeptiert"
   },
+  "verifiedCustomerAccess": {
+    "heading": "Kundenzugang verifizieren",
+    "subheading": "Geben Sie Ihren Zugangscode und Ihre Firmen-E-Mail-Adresse ein, um den Kontozugang freizuschalten.",
+    "codeLabel": "Zugangscode",
+    "codeRequired": "Bitte geben Sie Ihren Zugangscode ein.",
+    "submitLabel": "Zugang verifizieren",
+    "success": "Zugang verifiziert. Bitte melden Sie sich an oder erstellen Sie Ihr Konto.",
+    "error": "Dieser Zugangscode und diese E-Mail-Adresse konnten nicht verifiziert werden.",
+    "verifiedHeading": "Zugang verifiziert",
+    "verifiedSubheading": "Melden Sie sich an oder erstellen Sie ein Konto mit der verifizierten E-Mail-Adresse, um den Zugang abzuschließen."
+  },
   "account": {
     "accountSettings": {
       "billingDetails": {

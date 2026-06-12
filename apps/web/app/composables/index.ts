@@ -83,6 +83,7 @@ export * from './useShippingAsBilling';
 export * from './useSiteConfiguration';
 export * from './useStructuredData';
 export * from './useValidatorAggregator';
+export * from './useVerifiedCustomerAccess';
 export * from './useWishlist';
 export * from './useRobots';
 export * from './useTranslations';

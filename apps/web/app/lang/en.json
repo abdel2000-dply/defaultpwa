@@ -24,6 +24,17 @@
     "outOfStock": "The product is currently out of stock",
     "readAndAccepted": "I have read and accepted the {privacyPolicy}"
   },
+  "verifiedCustomerAccess": {
+    "heading": "Verify customer access",
+    "subheading": "Enter your access code and company email to unlock your account access.",
+    "codeLabel": "Access code",
+    "codeRequired": "Please enter your access code.",
+    "submitLabel": "Verify access",
+    "success": "Access verified. Please log in or create your account.",
+    "error": "We could not verify this access code and email.",
+    "verifiedHeading": "Access verified",
+    "verifiedSubheading": "Log in or create an account with the verified email address to complete access."
+  },
   "account": {
     "accountSettings": {
       "billingDetails": {
