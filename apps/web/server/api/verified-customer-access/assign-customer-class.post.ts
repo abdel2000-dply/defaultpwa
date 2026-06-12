@@ -23,9 +23,9 @@ const changeCookieName = (cookieHeader: string, oldName: string, newName: string
     .split(';')
     .map((cookie) => {
       const trimmedCookie = cookie.trim();
-      const [cookieName] = trimmedCookie.split('=');
+      const [cookieName = ''] = trimmedCookie.split('=');
 
-      if (matchesCookiePattern(cookieName, newName)) return '';
+      if (!cookieName || matchesCookiePattern(cookieName, newName)) return '';
 
       if (matchesCookiePattern(cookieName, oldName)) {
         const suffix = getNumericSuffix(cookieName, oldName);
