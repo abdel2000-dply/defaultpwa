@@ -17,10 +17,12 @@
           <SfInput v-model="email" name="email" type="email" autocomplete="email" required />
         </label>
 
-        <p v-if="error" class="text-negative-700 text-sm" role="alert">{{ error }}</p>
+        <p v-if="error" class="rounded-md bg-negative-100 px-3 py-2 text-negative-700 text-sm" role="alert">
+          {{ error }}
+        </p>
 
-        <UiButton type="submit" class="mt-2" :disabled="loading">
-          <SfLoaderCircular v-if="loading" class="flex justify-center items-center" size="base" />
+        <UiButton type="submit" class="mt-2" :disabled="isSubmitting">
+          <SfLoaderCircular v-if="isSubmitting" class="flex justify-center items-center" size="base" />
           <span v-else>{{ t('verifiedCustomerAccess.submitLabel') }}</span>
         </UiButton>
       </form>
@@ -51,10 +53,12 @@ useHead({
 const router = useRouter();
 const localePath = useLocalePath();
 const { send } = useNotification();
-const { verifyAccess, setPendingVerification, loading, error } = useVerifiedCustomerAccess();
+const { verifyAccess, assignCustomerClass, loading, error } = useVerifiedCustomerAccess();
 
 const code = ref('');
 const email = ref('');
+const assigning = ref(false);
+const isSubmitting = computed(() => loading.value || assigning.value);
 
 const getAuthPath = (data: unknown) => {
   if (typeof data === 'string') {
@@ -69,6 +73,20 @@ const getAuthPath = (data: unknown) => {
   return typeof action === 'string' && action.toLowerCase().includes('register') ? paths.register : paths.authLogin;
 };
 
+const getAuthAction = (data: unknown) => {
+  if (!data || typeof data !== 'object') return 'login';
+
+  const record = data as Record<string, unknown>;
+  const action = record.nextAction ?? record.action ?? record.type ?? record.nextStep ?? record.authAction;
+
+  return typeof action === 'string' && action.toLowerCase().includes('register') ? 'register' : 'login';
+};
+
+const getSuccessMessage = (data: unknown) =>
+  getAuthAction(data) === 'register'
+    ? t('verifiedCustomerAccess.noRecordFound')
+    : t('verifiedCustomerAccess.loginVerified');
+
 const submitVerification = async () => {
   if (!code.value.trim()) {
     error.value = t('verifiedCustomerAccess.codeRequired');
@@ -81,21 +99,25 @@ const submitVerification = async () => {
   }
 
   const result = await verifyAccess({ code: code.value, email: email.value });
-  if (!result.success) return;
+  if (!result.success) {
+    send({ message: result.message || t('verifiedCustomerAccess.error'), type: 'negative' });
+    return;
+  }
 
-  setPendingVerification({ code: code.value, email: email.value });
-  send({ message: result.message || t('verifiedCustomerAccess.success'), type: 'positive' });
+  assigning.value = true;
+  const assignmentResult = await assignCustomerClass({ code: code.value, email: email.value });
+  assigning.value = false;
+
+  if (!assignmentResult.success) {
+    error.value = assignmentResult.message || t('verifiedCustomerAccess.error');
+    send({ message: error.value, type: 'negative' });
+    return;
+  }
+
+  const successMessage = getSuccessMessage(result.data);
+  send({ message: successMessage, type: 'positive' });
   const redirectUrl = router.currentRoute.value.query.redirect as string;
   const authPath = getAuthPath(result.data);
-
-  sessionStorage.setItem(
-    'verifiedCustomerAccess.debug',
-    JSON.stringify({
-      email: email.value.trim(),
-      authPath,
-      verificationPayload: result.data,
-    }),
-  );
 
   await navigateTo({
     path: localePath(authPath),

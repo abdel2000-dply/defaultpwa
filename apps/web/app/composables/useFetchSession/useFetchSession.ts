@@ -12,9 +12,6 @@ export const useFetchSession = () => {
     loading: false,
   }));
 
-  const hasVerifiedCustomerAccessDebug = () =>
-    typeof sessionStorage !== 'undefined' && !!sessionStorage.getItem('verifiedCustomerAccess.debug');
-
   /** Function for getting current user/cart data from session
    * @example
    * ``` ts
@@ -25,10 +22,6 @@ export const useFetchSession = () => {
     state.value.loading = true;
     try {
       const { data } = await useSdk().plentysystems.getSession();
-      if (hasVerifiedCustomerAccessDebug()) {
-        console.error('[VerifiedCustomerAccess] getSession API response', data);
-      }
-
       const { setCart } = useCart();
       const { setUser } = useCustomer();
       if (data) {

@@ -31,6 +31,9 @@
     "codeRequired": "Please enter your access code.",
     "submitLabel": "Verify access",
     "success": "Access verified. Please log in or create your account.",
+    "loginVerified": "Access has been verified, please login to continue.",
+    "noRecordFound": "No record was found for the provided email.",
+    "maxUsageReached": "This access code has reached the maximum number of allowed uses.",
     "error": "We could not verify this access code and email.",
     "verifiedHeading": "Access verified",
     "verifiedSubheading": "Log in or create an account with the verified email address to complete access."

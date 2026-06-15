@@ -31,6 +31,9 @@
     "codeRequired": "Bitte geben Sie Ihren Zugangscode ein.",
     "submitLabel": "Zugang verifizieren",
     "success": "Zugang verifiziert. Bitte melden Sie sich an oder erstellen Sie Ihr Konto.",
+    "loginVerified": "Der Zugang wurde verifiziert. Bitte melden Sie sich an, um fortzufahren.",
+    "noRecordFound": "Fuer die angegebene E-Mail-Adresse wurde kein Datensatz gefunden.",
+    "maxUsageReached": "Dieser Zugangscode hat die maximal erlaubte Anzahl an Verwendungen erreicht.",
     "error": "Dieser Zugangscode und diese E-Mail-Adresse konnten nicht verifiziert werden.",
     "verifiedHeading": "Zugang verifiziert",
     "verifiedSubheading": "Melden Sie sich an oder erstellen Sie ein Konto mit der verifizierten E-Mail-Adresse, um den Zugang abzuschließen."

@@ -81,53 +81,6 @@ export const useCustomer = () => {
     checkUserState();
   };
 
-  const getCustomerClassDebug = () => {
-    const userRecord = state.value.user as Record<string, unknown> | null;
-    const verifiedAccessContext =
-      typeof sessionStorage === 'undefined' ? null : sessionStorage.getItem('verifiedCustomerAccess.debug');
-    let parsedVerifiedAccessContext = null;
-
-    try {
-      parsedVerifiedAccessContext = verifiedAccessContext ? JSON.parse(verifiedAccessContext) : null;
-    } catch {
-      parsedVerifiedAccessContext = verifiedAccessContext;
-    }
-
-    return {
-      verifiedAccessContext: parsedVerifiedAccessContext,
-      isAuthorized: state.value.isAuthorized,
-      email: state.value.user?.email,
-      customerClassId: userRecord?.customerClassId,
-      classId: userRecord?.classId,
-      customerClass: userRecord?.customerClass,
-      user: state.value.user,
-    };
-  };
-
-  const hasVerifiedCustomerAccessDebug = () =>
-    typeof sessionStorage !== 'undefined' && !!sessionStorage.getItem('verifiedCustomerAccess.debug');
-
-  const assignVerifiedCustomerClassAfterAuth = async (source: 'login' | 'registration') => {
-    const {
-      assignCustomerClass,
-      clearPendingVerification,
-      getPendingVerification,
-    } = useVerifiedCustomerAccess();
-    const pendingVerification = getPendingVerification();
-
-    if (!pendingVerification) return;
-
-    console.error(`[VerifiedCustomerAccess] assigning customer class after ${source}`, pendingVerification);
-    const assignmentResult = await assignCustomerClass(pendingVerification);
-    console.error('[VerifiedCustomerAccess] assign-customer-class API response', assignmentResult);
-
-    if (!assignmentResult.success) return;
-
-    clearPendingVerification();
-    await useFetchSession().fetchSession();
-    console.error(`[VerifiedCustomerAccess] session after customer class assignment (${source})`, getCustomerClassDebug());
-  };
-
   /** Function for login a user as guest
    * @param { string } email
    * @returns { Promise<void> }
@@ -169,14 +122,8 @@ export const useCustomer = () => {
     state.value.loading = true;
 
     try {
-      const loginResponse = await useSdk().plentysystems.doLogin({ email: email, password: password });
-      if (hasVerifiedCustomerAccessDebug()) {
-        console.error('[VerifiedCustomerAccess] doLogin API response', loginResponse);
-      }
-
+      await useSdk().plentysystems.doLogin({ email: email, password: password });
       await useFetchSession().fetchSession();
-      console.error('[VerifiedCustomerAccess] session after login; backend customer class assignment should be reflected here if exposed by the API', getCustomerClassDebug());
-      await assignVerifiedCustomerClassAfterAuth('login');
 
       if (state.value.user) {
         emit('frontend:login', { user: state.value.user });
@@ -227,14 +174,9 @@ export const useCustomer = () => {
     try {
       state.value.loading = true;
       const { data } = await useSdk().plentysystems.doRegisterUser(params);
-      if (hasVerifiedCustomerAccessDebug()) {
-        console.error('[VerifiedCustomerAccess] doRegisterUser API response', data);
-      }
 
       if (data) {
         await useFetchSession().fetchSession();
-        console.error('[VerifiedCustomerAccess] session after registration; backend customer class assignment should be reflected here if exposed by the API', getCustomerClassDebug());
-        await assignVerifiedCustomerClassAfterAuth('registration');
 
         if (state.value.user) {
           emit('frontend:signUp', { user: state.value.user });
